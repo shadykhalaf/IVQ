@@ -1,0 +1,84 @@
+//question 1
+SELECT 
+  c.name AS college_name,
+  MIN(r.ranking) AS best_rank,
+  COUNT(DISTINCT r.studentId) AS num_students
+FROM 
+  colleges c
+  JOIN students s ON c.id = s.collegeId
+  JOIN rankings r ON s.id = r.studentId
+WHERE 
+  r.year = 2015 AND r.ranking BETWEEN 1 AND 3
+GROUP BY 
+  c.name
+HAVING 
+  COUNT(DISTINCT r.studentId) > 0;
+
+
+
+//question 2
+function transformDateFormat(dates) {
+  const transformedDates = [];
+
+  for (let date of dates) {
+    if (date.includes("/")) {
+      // Date format: YYYY/MM/DD
+      const parts = date.split("/");
+      const year = parts[0];
+      const month = parts[1];
+      const day = parts[2];
+      transformedDates.push(`${year}${month}${day}`);
+    } else if (date.includes("-")) {
+      // Date format: MM-DD-YYYY
+      const parts = date.split("-");
+      const year = parts[2];
+      const month = parts[0];
+      const day = parts[1];
+      transformedDates.push(`${year}${month}${day}`);
+    } else {
+      // Date format: DD/MM/YYYY
+      const parts = date.split("/");
+      const year = parts[2];
+      const month = parts[1];
+      const day = parts[0];
+      transformedDates.push(`${year}${month}${day}`);
+    }
+  }
+
+  return transformedDates;
+}
+
+const dates = ["2010/02/20", "19/12/2016", "11-18-2012", "20130720"];
+console.log(transformDateFormat(dates));
+
+
+
+
+//question 3
+
+
+function isValid(s) {
+  const stack = [];
+  const openingBrackets = ['(', '{', '['];
+  const closingBrackets = [')', '}', ']'];
+
+  for (let i = 0; i < s.length; i++) {
+    const char = s[i];
+
+    if (openingBrackets.includes(char)) {
+      stack.push(char);
+    } else if (closingBrackets.includes(char)) {
+      const correspondingOpeningBracket = openingBrackets[closingBrackets.indexOf(char)];
+
+      if (stack.length === 0 || stack.pop() !== correspondingOpeningBracket) {
+        return false;
+      }
+    }
+  }
+
+  return stack.length === 0;
+}
+
+// Testing
+console.log(isValid("()")); // true
+
